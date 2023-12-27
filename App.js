@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LogbookScreen from './screens/LogbookScreen';
+import ManualLog from './screens/ManualLog';
 
 export default function App() {
 
@@ -16,6 +17,7 @@ export default function App() {
         <Stack.Navigator>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Logbook" component={LogbookScreen} />
+          <Stack.Screen name="ManualLog" component={ManualLog} />
         </Stack.Navigator>
       </SafeAreaProvider>
     </NavigationContainer>
