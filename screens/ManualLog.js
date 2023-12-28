@@ -4,8 +4,12 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import {GOOGLE_MAPS_APIKEY} from "@env"
 import tw from 'twrnc'
 import Map from '../components/Map';
+import { useDispatch } from 'react-redux';
+import { setOrigin, setDestination } from '../reducers/navSlice';
 
 export default function ManualLog() {
+    
+ const dispatch = useDispatch();
 
   return (
     <View style={tw`h-full`}>
@@ -25,7 +29,7 @@ export default function ManualLog() {
                     placeholder='From ?'
                     fetchDetails={true}
                     onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                        console.log(data, details);
+                        dispatch(setOrigin(details.geometry.location));
                     }}
                     query={{
                         key: GOOGLE_MAPS_APIKEY,
@@ -46,7 +50,7 @@ export default function ManualLog() {
                     placeholder='To ?'
                     fetchDetails={true}
                     onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                        console.log(data, details);
+                        dispatch(setDestination(details.geometry.location));
                     }}
                     query={{
                         key: GOOGLE_MAPS_APIKEY,

@@ -6,21 +6,25 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LogbookScreen from './screens/LogbookScreen';
 import ManualLog from './screens/ManualLog';
+import { Provider } from 'react-redux';
+import { store } from './store'
 
 export default function App() {
 
   const Stack = createNativeStackNavigator();
 
   return (
-    <NavigationContainer>
-      <SafeAreaProvider>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Logbook" component={LogbookScreen} />
-          <Stack.Screen name="ManualLog" component={ManualLog} />
-        </Stack.Navigator>
-      </SafeAreaProvider>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <SafeAreaProvider>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Logbook" component={LogbookScreen} />
+            <Stack.Screen name="ManualLog" component={ManualLog} />
+          </Stack.Navigator>
+        </SafeAreaProvider>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
