@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,22 +16,19 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <SafeAreaProvider>
-          <Stack.Navigator>
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Logbook" component={LogbookScreen} />
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding": "height"}
+            style={{ flex: 1}}
+          >
+            <Stack.Navigator>
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Logbook" component={LogbookScreen} />
             <Stack.Screen name="ManualLog" component={ManualLog} />
           </Stack.Navigator>
+          </KeyboardAvoidingView>
         </SafeAreaProvider>
       </NavigationContainer>
     </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

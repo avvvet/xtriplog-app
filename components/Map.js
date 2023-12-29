@@ -1,35 +1,52 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import tw from 'twrnc';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import MapViewDirections from 'react-native-maps-directions';
+import {GOOGLE_MAPS_APIKEY} from "@env"
+import { setTripInfo } from '../reducers/navSlice';
 
 export default function Map() {
+  const [error, setError] = useState(null)
   const { origin, destination } = useSelector((state) => state.nav);
   const mapViewRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (mapViewRef.current && origin.lat && destination.lat) {
-      // Calculate bounding box for both markers
-      const minLat = Math.min(origin.lat, destination.lat);
-      const maxLat = Math.max(origin.lat, destination.lat);
-      const minLng = Math.min(origin.lng, destination.lng);
-      const maxLng = Math.max(origin.lng, destination.lng);
-
-      // Calculate center and delta for the bounding box
-      const centerLat = (minLat + maxLat) / 2;
-      const centerLng = (minLng + maxLng) / 2;
-      const deltaLat = maxLat - minLat + 0.020; // Add padding
-      const deltaLng = maxLng - minLng + 0.020; // Add padding
-
-      mapViewRef.current.animateToRegion({
-        latitude: centerLat,
-        longitude: centerLng,
-        latitudeDelta: deltaLat,
-        longitudeDelta: deltaLng,
-      });
+    
+      mapViewRef.current.fitToSuppliedMarkers(["origin", "destination"], {
+        edgePadding: { top: 30, right: 40, bottom: 20, left: 40}
+      })
     }
   }, [origin, destination]);
+  
+  useEffect(() => {
+    if (mapViewRef.current && origin.lat && destination.lat) {
+      const getTripTime = async () => {
+        fetch(
+          `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin.lat},${origin.lng}&destinations=${destination.lat},${destination.lng}&key=${GOOGLE_MAPS_APIKEY}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            const distanceInKilometers = data.rows[0].elements[0].distance.value / 1000;
+            const durationText = data.rows[0].elements[0].duration.text;
+            const durationInSeconds = data.rows[0].elements[0].duration.value;
+            dispatch(setTripInfo({distance: distanceInKilometers.toFixed(1), trip_time: durationText}))
+          })
+          .catch((error) => {
+            //console.error("Error fetching trip time:", error);
+          });
+      };
+  
+      getTripTime();
+    }
+  }, [origin, destination, GOOGLE_MAPS_APIKEY]);
+  
+  const onMapError = (error) => {
+    setError(error)
+  }
 
   return (
     <MapView
@@ -51,7 +68,7 @@ export default function Map() {
           }}
           title="From"
           description="yellow"
-          identifier="from"
+          identifier="origin"
           pinColor="green"
         />
       )}
@@ -68,6 +85,33 @@ export default function Map() {
           pinColor="red"
         />
       )}
+
+      {!error && mapViewRef.current && origin.lat && destination.lat && (
+        <MapViewDirections
+          origin={{latitude: origin.lat, longitude: origin.lng}}
+          destination={{
+            latitude: destination.lat,
+            longitude: destination.lng,
+          }}
+          apikey={GOOGLE_MAPS_APIKEY}
+          strokeColor="black"
+          strokeWidth={4}
+          // onReady={result => {
+          //   // Convert duration to hours and minutes
+          //   const hours = Math.floor(result.duration / 60);
+          //   const minutes = Math.floor(result.duration % 60);
+            
+
+          //   // Format the duration
+          //   const formattedDuration = `${hours}h ${minutes}min`;
+          //   dispatch(setTripInfo({distance: result.distance.toFixed(1), trip_time: formattedDuration}))
+          //   console.log(`Distance: ${result.distance} km`)
+          //   console.log(`Duration: ${result.duration} min.`)
+          // }}
+          //onError={onMapError}
+        />
+      )}
+
     </MapView>
   );
 }
