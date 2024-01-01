@@ -7,6 +7,7 @@ import LogbookScreen from './screens/LogbookScreen';
 import ManualLog from './screens/ManualLog';
 import { Provider } from 'react-redux';
 import { store } from './store'
+import Toast from 'react-native-toast-message';
 
 export default function App() {
 
@@ -27,6 +28,7 @@ export default function App() {
           </Stack.Navigator>
           </KeyboardAvoidingView>
         </SafeAreaProvider>
+        <Toast />
       </NavigationContainer>
     </Provider>
   );

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import tw from 'twrnc'
 import Map from '../components/Map';
-import ManualLogbookCard from '../components/ManualLogbookCard';
+import AddTripCard from '../components/AddTripCard';
 
 export default function ManualLog() {
 
@@ -13,7 +13,7 @@ export default function ManualLog() {
         </View>
 
         <View style={tw`h-50`}>
-            <ManualLogbookCard/>
+            <AddTripCard/>
         </View>
 
     </View>     

@@ -5,7 +5,8 @@ const navSlice = createSlice({
   initialState: {
     origin: {"lat": 8.9879715, "lng": 38.78918609999999}, // default location
     destination: {"lat": 7.9879715, "lng": 48.78918609999999},
-    tripInfo: {distance: 0, trip_time: 0}
+    tripInfo: {distance: 0, trip_time: 0},
+    addTripFlag: false,
   },
   reducers: {
     setOrigin(state, action) {
@@ -16,10 +17,13 @@ const navSlice = createSlice({
     },
     setTripInfo(state, action) {
       state.tripInfo = action.payload
+    },
+    setAddTripFlag(state, action) {
+      state.addTripFlag = action.payload
     }
   }
 })
 
-export const { setOrigin, setDestination, setTripInfo } = navSlice.actions
+export const { setOrigin, setDestination, setTripInfo, setAddTripFlag } = navSlice.actions
 
 export default navSlice.reducer

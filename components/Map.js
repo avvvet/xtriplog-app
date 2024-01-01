@@ -1,52 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import tw from 'twrnc';
 import { useDispatch, useSelector } from 'react-redux';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_APIKEY} from "@env"
+import { GOOGLE_MAPS_APIKEY } from "@env";
 import { setTripInfo } from '../reducers/navSlice';
 
+// Default coordinates
+const DEFAULT_LATITUDE = 37.78825;
+const DEFAULT_LONGITUDE = -122.4324;
+
 export default function Map() {
-  const [error, setError] = useState(null)
-  const { origin, destination } = useSelector((state) => state.nav);
+  const { origin, destination, addTripFlag } = useSelector((state) => state.nav);
   const mapViewRef = useRef(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (mapViewRef.current && origin.lat && destination.lat) {
-    
+    if (addTripFlag && mapViewRef.current && origin.lat && destination.lat) {
       mapViewRef.current.fitToSuppliedMarkers(["origin", "destination"], {
-        edgePadding: { top: 30, right: 40, bottom: 20, left: 40}
-      })
+        edgePadding: { top: 30, right: 40, bottom: 20, left: 40 }
+      });
     }
-  }, [origin, destination]);
-  
+  }, [addTripFlag, origin, destination]);
+
   useEffect(() => {
-    if (mapViewRef.current && origin.lat && destination.lat) {
+    if (addTripFlag && mapViewRef.current && origin.lat && destination.lat) {
       const getTripTime = async () => {
-        fetch(
-          `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin.lat},${origin.lng}&destinations=${destination.lat},${destination.lng}&key=${GOOGLE_MAPS_APIKEY}`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            const distanceInKilometers = data.rows[0].elements[0].distance.value / 1000;
-            const durationText = data.rows[0].elements[0].duration.text;
-            const durationInSeconds = data.rows[0].elements[0].duration.value;
-            dispatch(setTripInfo({distance: distanceInKilometers.toFixed(1), trip_time: durationText}))
-          })
-          .catch((error) => {
-            //console.error("Error fetching trip time:", error);
-          });
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin.lat},${origin.lng}&destinations=${destination.lat},${destination.lng}&key=${GOOGLE_MAPS_APIKEY}`
+          );
+          const data = await response.json();
+          const distanceInKilometers = data.rows[0].elements[0].distance.value / 1000;
+          const durationText = data.rows[0].elements[0].duration.text;
+          dispatch(setTripInfo({ distance: distanceInKilometers.toFixed(1), trip_time: durationText }));
+        } catch (error) {
+          // Handle error
+          console.error("Error fetching trip time:", error);
+        }
       };
-  
+
       getTripTime();
     }
-  }, [origin, destination, GOOGLE_MAPS_APIKEY]);
-  
-  const onMapError = (error) => {
-    setError(error)
-  }
+  }, [addTripFlag, origin, destination, GOOGLE_MAPS_APIKEY, dispatch]);
 
   return (
     <MapView
@@ -54,13 +51,13 @@ export default function Map() {
       provider={PROVIDER_GOOGLE}
       style={tw`flex-1`}
       initialRegion={{
-        latitude: origin.lat || destination.lat,
-        longitude: origin.lng || destination.lng,
+        latitude: origin.lat || DEFAULT_LATITUDE,
+        longitude: origin.lng || DEFAULT_LONGITUDE,
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       }}
     >
-      {origin.lat && (
+      {addTripFlag && origin.lat && (
         <Marker
           coordinate={{
             latitude: origin.lat,
@@ -73,7 +70,7 @@ export default function Map() {
         />
       )}
 
-      {destination.lat && (
+      {addTripFlag && destination.lat && (
         <Marker
           coordinate={{
             latitude: destination.lat,
@@ -86,9 +83,9 @@ export default function Map() {
         />
       )}
 
-      {!error && mapViewRef.current && origin.lat && destination.lat && (
+      {addTripFlag && mapViewRef.current && origin.lat && destination.lat && (
         <MapViewDirections
-          origin={{latitude: origin.lat, longitude: origin.lng}}
+          origin={{ latitude: origin.lat, longitude: origin.lng }}
           destination={{
             latitude: destination.lat,
             longitude: destination.lng,
@@ -96,22 +93,8 @@ export default function Map() {
           apikey={GOOGLE_MAPS_APIKEY}
           strokeColor="black"
           strokeWidth={4}
-          // onReady={result => {
-          //   // Convert duration to hours and minutes
-          //   const hours = Math.floor(result.duration / 60);
-          //   const minutes = Math.floor(result.duration % 60);
-            
-
-          //   // Format the duration
-          //   const formattedDuration = `${hours}h ${minutes}min`;
-          //   dispatch(setTripInfo({distance: result.distance.toFixed(1), trip_time: formattedDuration}))
-          //   console.log(`Distance: ${result.distance} km`)
-          //   console.log(`Duration: ${result.duration} min.`)
-          // }}
-          //onError={onMapError}
         />
       )}
-
     </MapView>
   );
 }
