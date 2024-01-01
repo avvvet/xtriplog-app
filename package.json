@@ -28,6 +28,7 @@
     "react-native-vector-icons": "^10.0.3",
     "react-redux": "^9.0.4",
     "redux": "^5.0.1",
+    "toggle-switch-react-native": "^3.3.0",
     "twrnc": "^3.6.7"
   },
   "devDependencies": {
