@@ -2,6 +2,7 @@ import { StyleSheet, Text, View , SafeAreaView} from 'react-native'
 import React from 'react'
 import tw from 'twrnc'
 import NavOptions from '../components/NavOptions'
+import Footer from '../components/Footer'
 
 const HomeScreen = () => {
   return (
@@ -10,6 +11,7 @@ const HomeScreen = () => {
         <Text style={tw`text-7 pl-2 pb-2`}>XTripLog</Text>
         <NavOptions/>
       </View>
+      <Footer/>
     </SafeAreaView>
   )
 }

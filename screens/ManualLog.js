@@ -3,6 +3,7 @@ import React from 'react'
 import tw from 'twrnc'
 import Map from '../components/Map';
 import AddTripCard from '../components/AddTripCard';
+import Footer from '../components/Footer';
 
 export default function ManualLog() {
 
@@ -15,7 +16,7 @@ export default function ManualLog() {
         <View style={tw`h-50`}>
             <AddTripCard/>
         </View>
-
+        <Footer/>
     </View>     
   )
 }
