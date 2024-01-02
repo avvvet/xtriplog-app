@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -8,10 +9,45 @@ import ManualLog from './screens/ManualLog';
 import { Provider } from 'react-redux';
 import { store } from './store'
 import Toast from 'react-native-toast-message';
+import * as Location from 'expo-location';
 
 export default function App() {
 
   const Stack = createNativeStackNavigator();
+  
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      const locationSubscription = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.Highest,
+          timeInterval: 5000, // milliseconds
+          distanceInterval: 1, // meters
+          foregroundService: {
+            notificationTitle: 'Background Location Tracking',
+            notificationBody: 'Your app is tracking your location in the background.',
+          },
+        },
+        (location) => {
+          // Handle the received location update
+          console.log('Location update:', location);
+        }
+      );
+
+      return () => {
+        // Unsubscribe when the component unmounts
+        if (locationSubscription) {
+          locationSubscription.remove();
+        }
+      };
+    })();
+  }, []);
 
   return (
     <Provider store={store}>
