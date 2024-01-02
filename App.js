@@ -12,11 +12,25 @@ import Toast from 'react-native-toast-message';
 import * as Location from 'expo-location';
 
 export default function App() {
+  const Stack = createNativeStackNavigator();
+  
   const [isDriving, setIsDriving] = useState(false);
   const [locationEntries, setLocationEntries] = useState([]);
 
-  const Stack = createNativeStackNavigator();
-  
+  const shouldStartDriving = (location) => {
+    // Implement logic to determine if the user should start driving
+    // For example, check for a significant change in location or speed.
+    // Return true if driving should start, otherwise return false.
+    return true;
+  };
+
+  const shouldEndDriving = (location) => {
+    // Implement logic to determine if the user should end driving
+    // For example, check for a significant change in location or speed.
+    // Return true if driving should end, otherwise return false.
+    return true;
+  };
+
   useEffect(() => {
     (async () => {
       
@@ -54,21 +68,6 @@ export default function App() {
         }
       );
 
-      const shouldStartDriving = (location) => {
-        // Implement logic to determine if the user should start driving
-        // For example, check for a significant change in location or speed.
-        // Return true if driving should start, otherwise return false.
-        return true;
-      };
-      
-      const shouldEndDriving = (location) => {
-        // Implement logic to determine if the user should end driving
-        // For example, check for a significant change in location or speed.
-        // Return true if driving should end, otherwise return false.
-        return true;
-      };
-      
-
       return () => {
         // Unsubscribe when the component unmounts
         if (locationSubscription) {
@@ -77,6 +76,16 @@ export default function App() {
       };
     })();
   }, []);
+
+  const startDriving = () => {
+    setIsDriving(true);
+    // Additional logic when driving starts
+  };
+
+  const endDriving = () => {
+    setIsDriving(false);
+    // Additional logic when driving ends
+  };
 
   return (
     <Provider store={store}>
