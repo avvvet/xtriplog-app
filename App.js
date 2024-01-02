@@ -12,6 +12,8 @@ import Toast from 'react-native-toast-message';
 import * as Location from 'expo-location';
 
 export default function App() {
+  const [isDriving, setIsDriving] = useState(false);
+  const [locationEntries, setLocationEntries] = useState([]);
 
   const Stack = createNativeStackNavigator();
   
@@ -37,8 +39,35 @@ export default function App() {
         (location) => {
           // Handle the received location update
           console.log('Location update:', location);
+          
+          // Analyze the location update to determine start/end of driving
+          if (!isDriving && shouldStartDriving(location)) {
+            startDriving();
+          } else if (isDriving && shouldEndDriving(location)) {
+            endDriving();
+          }
+
+          // If the user is driving, add the location to entries
+          if (isDriving) {
+            setLocationEntries((prevEntries) => [...prevEntries, location]);
+          }
         }
       );
+
+      const shouldStartDriving = (location) => {
+        // Implement logic to determine if the user should start driving
+        // For example, check for a significant change in location or speed.
+        // Return true if driving should start, otherwise return false.
+        return true;
+      };
+      
+      const shouldEndDriving = (location) => {
+        // Implement logic to determine if the user should end driving
+        // For example, check for a significant change in location or speed.
+        // Return true if driving should end, otherwise return false.
+        return true;
+      };
+      
 
       return () => {
         // Unsubscribe when the component unmounts
