@@ -9,13 +9,13 @@ const data = [
     { 
       id: "100",
       title: "Log book",
-      image: "https://links.papareact.com/3pn",
+      image: require('../assets/map_xtriplog.png'),//"https://links.papareact.com/3pn",
       screen: "LogbookScreen"
     },
     { 
       id: "200",
       title: "Expense",
-      image: "https://links.papareact.com/28w",
+      image: require('../assets/expense_xtriplog.png'),//"https://links.papareact.com/28w",
       screen: "ExpenseTrackerScreen"
     }
 ]
@@ -29,15 +29,15 @@ const NavOptions = () => {
       keyExtractor={(item) => item.id}
       horizontal
       renderItem={({item}) => (
-        <TouchableOpacity onPress={() => navigation.navigate('Logbook')} style={tw`p-2 pl-6 pb-4 pt-4 bg-gray-200 m-2 w-40`}>
+        <TouchableOpacity onPress={() => navigation.navigate('Logbook')} style={tw`p-1 pb-4 pt-4 bg-gray-200 m-2 w-40`}>
           <View>
             <Image
-              style={{width: 120, height: 120, resizeMode: 'contain'}}
-              source={{uri: item.image}}  //source={{uri: item.image}}
+              style={{width: 150, height: 150, resizeMode: 'contain'}}
+              source={item.image}  //source={{uri: item.image}}
             />
-            <Text style={tw`mt-2 text-lg font-semibold`}>{item.title}</Text>
+            <Text style={tw`mt-2 text-lg font-semibold pl-6`}>{item.title}</Text>
             <Icon
-              style={tw`p-2 bg-black rounded-full w-10 mt-4`}
+              style={tw`p-2 bg-black rounded-full w-10 mt-4 ml-6`}
               name="arrowright" color="white" type="antdesign"
             />
           </View>

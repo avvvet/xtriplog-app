@@ -7,10 +7,6 @@ import MapViewDirections from 'react-native-maps-directions';
 import { GOOGLE_MAPS_APIKEY } from "@env";
 import { setTripInfo } from '../reducers/navSlice';
 
-// Default coordinates
-const DEFAULT_LATITUDE = 37.78825;
-const DEFAULT_LONGITUDE = -122.4324;
-
 export default function Map() {
   const { origin, destination, addTripFlag } = useSelector((state) => state.nav);
   const mapViewRef = useRef(null);

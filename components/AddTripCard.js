@@ -11,8 +11,8 @@ import Toast from 'react-native-toast-message';
 const DEFAULT_LATITUDE = 37.78825;
 const DEFAULT_LONGITUDE = -122.4324;
 
-const DEFAULT_ORIGIN = {"lat": 8.9879715, "lng": 38.78918609999999}
-const DEFAULT_DESTINATION = {"lat": 7.9879715, "lng": 48.78918609999999}
+const DEFAULT_ORIGIN = {"lat": -37.817275, "lng": 144.9659505}
+const DEFAULT_DESTINATION = {"lat": -37.8117996, "lng": 144.9694696}
 
 const AddTripCard = () => {
   const { origin, destination, tripInfo, addTripFlag } = useSelector((state) => state.nav);

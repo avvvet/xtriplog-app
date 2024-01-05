@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit"
 const navSlice = createSlice({
   name: "nav",
   initialState: {
-    origin: {"lat": 8.9879715, "lng": 38.78918609999999}, // default location
-    destination: {"lat": 7.9879715, "lng": 48.78918609999999},
+    origin: {"lat": -37.817275, "lng": 144.9659505}, // default location
+    destination: {"lat": -37.8117996, "lng": 144.9694696},
     tripInfo: {distance: 0, trip_time: 0},
     addTripFlag: false,
   },
