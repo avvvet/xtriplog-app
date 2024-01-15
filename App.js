@@ -13,6 +13,8 @@ import * as Location from 'expo-location';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  const [consecutiveSpeedCount, setConsecutiveSpeedCount] = useState(0);
+  const [lastSpeedCheckTime, setLastSpeedCheckTime] = useState(0);
   
   const [errorMsg, setErrorMsg] = useState(null);
   const [isDriving, setIsDriving] = useState(false);
@@ -35,7 +37,35 @@ export default function App() {
     // Implement logic to determine if the user should end driving
     // For example, check for a significant change in location or speed.
     // Return true if driving should end, otherwise return false.
-    return true;
+    
+    
+    const speedThreshold = 5; // meters per second (adjust as needed)
+    const consecutiveSpeedChecks = 5;
+    const speedChecksInterval = 60000; // 1 minute in milliseconds
+
+    // If the current speed is below the threshold, increment the consecutive counter
+    if (location.coords.speed <= speedThreshold) {
+      const currentTime = new Date().getTime();
+
+      // Check if the time difference since the last speed check exceeds the interval
+      if (currentTime - lastSpeedCheckTime >= speedChecksInterval) {
+        setConsecutiveSpeedCount((prevCount) => prevCount + 1);
+
+        // Check if the consecutive speed count is greater than or equal to the threshold
+        if (consecutiveSpeedCount >= consecutiveSpeedChecks) {
+          // Reset the consecutive counter and update the last speed check time
+          setConsecutiveSpeedCount(0);
+          setLastSpeedCheckTime(currentTime);
+          return true;
+        }
+      }
+    } else {
+      // If the speed differs, reset the consecutive counter and update the last speed check time
+      setConsecutiveSpeedCount(0);
+      setLastSpeedCheckTime(new Date().getTime());
+    }
+
+    return false;
   };
 
   useEffect(() => {
@@ -87,6 +117,7 @@ export default function App() {
 
   const startDriving = () => {
     setIsDriving(true);
+    setConsecutiveSpeedCount(0);
     // Additional logic when driving starts
   };
 
