@@ -96,12 +96,3 @@ export default function Map() {
 }
 
 const styles = StyleSheet.create({});
-
-// m := map[int]int{8: 1, 4: 3}
-
-// for i := 0; i < 10; i++ {
-//   fmt.Println(">> ", i)
-//   if v, flag := m[i]; !flag {
-//     fmt.Println("found ", v)
-//   }
-// }
