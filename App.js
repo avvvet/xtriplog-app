@@ -14,6 +14,7 @@ import * as Location from 'expo-location';
 export default function App() {
   const Stack = createNativeStackNavigator();
   
+  const [errorMsg, setErrorMsg] = useState(null);
   const [isDriving, setIsDriving] = useState(false);
   const [locationEntries, setLocationEntries] = useState([]);
 
@@ -21,7 +22,13 @@ export default function App() {
     // Implement logic to determine if the user should start driving
     // For example, check for a significant change in location or speed.
     // Return true if driving should start, otherwise return false.
-    return true;
+
+    //lets use speed condition
+    const speedThreshold = 5; // meters per second (adjust as needed)
+  
+    console.log("line 28: speed ", location.coords.speed , "  speedThreshold ",  speedThreshold)
+    return location.coords.speed > speedThreshold;
+   
   };
 
   const shouldEndDriving = (location) => {
@@ -36,6 +43,7 @@ export default function App() {
       
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
+        console.log(">>> Permission to access location was denied")
         setErrorMsg('Permission to access location was denied');
         return;
       }
